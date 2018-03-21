@@ -89,6 +89,27 @@ This would be fine from a VM behavior perspective but makes things more difficul
 from a tooling perspective specifically because the tooling would have to perform
 additional more complex analysis to know what `dep;` actualy means.
 
+Tools like linters may consistently struggle with reliably detecting use of deprecated
+code even using a mechanism such as this. For instance,
+
+```js
+class Foo {
+  bar() {
+    deprecated
+  }
+}
+
+require('some-module-that-monkey-patches-Foo')
+
+var foo = new Foo()
+foo.bar()
+```
+
+In this case, tools would have to be able to reliably determine if `bar()` has
+been monkeypatched in order to give any kind of reasonable warning. This is why
+relying strictly on tools like linting is not sufficient. There's no silver bullet
+around resolving this particular ambiguity.
+
 ## Pragma option: `'deprecated';`
 
 Alternatively, `deprecated;` can be a pragma type instruction:
