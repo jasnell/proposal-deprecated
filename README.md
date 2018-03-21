@@ -35,9 +35,13 @@ function deprecatedFunction() {
 Tooling support:
 
 * VM implementations supporting the `deprecated` mechanism can provide an option to
-  throw when `deprecated` code is encountered or provide an embedder API to receive
-  a callback when `deprecated` code is compiled, allowing embedders like Node.js the
-  ability to custom handle it.
-* VM implementations can automatically de-optimize code in any `deprecated` scope.
+  throw when `deprecated` code is encountered (similar in idea to `node --throw-deprecation`)
+  or provide an embedder API to receive a callback when `deprecated` code is compiled, allowing
+  embedders like Node.js the ability to custom handle it. (similar in idea to
+  Node.js' `process.on('warning', (warning) => { /* ... */ })` API)
+* VM implementations can automatically de-optimize code in any `deprecated` scope with
+  an option to ignore the `deprecated` statement if necessary. The point is, there would
+  be a penalty-by-default to use `deprecated` code that users would need to explicitly
+  opt-out from. (similar in idea to: `node --no-deprecation`)
 * Debuggers, IDEs, linters, and related tooling can provide visible warnings about
-  use of `deprecated` code
+  use of `deprecated` code.
