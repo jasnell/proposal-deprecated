@@ -72,6 +72,23 @@ function foo() {
 }
 ```
 
+We *could* go with an approach like `import { deprecated } from 'something'` to pull in the intrinsic rather
+than making it global. 
+
+Specifically,
+
+```js
+import { deprecated as dep } from 'something'
+
+function foo() {
+  dep;
+ }
+```
+
+This would be fine from a VM behavior perspective but makes things more difficult
+from a tooling perspective specifically because the tooling would have to perform
+additional more complex analysis to know what `dep;` actualy means.
+
 ## Pragma option: `'deprecated';`
 
 Alternatively, `deprecated;` can be a pragma type instruction:
