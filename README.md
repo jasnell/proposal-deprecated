@@ -64,6 +64,10 @@ function deprecatedFunction() {
 The pragma directive option has the fewest number of edge cases, is the easiest to
 polyfill, and avoids potential conflicts that could break user code.
 
+*Also worth noting is the fact that the pragma directive approach does not
+actually require any action on the part of the TC-39 committee. The VM's and
+tooling providers can choose to support a `'deprecated';` directive by convention.*
+
 ## Polyfills and Dealing with Ambiguity
 
 To make this easily polyfillable and to avoid breaking existing code, `deprecated`
