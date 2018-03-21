@@ -1,4 +1,4 @@
-# deprecated reserved keyword
+# Deprecated Stuff
 
 # Motivation
 
@@ -6,7 +6,7 @@
 
 # Proposal
 
-The proposal is to introduce a new `deprecated;` keyword to the language such that
+The proposal is to introduce a new `deprecated;` global to the language such that
 deprecated code can be easily identified in a standard way by tooling and the VM
 implementations.
 
@@ -111,7 +111,7 @@ This approach, however, carries with it a number of important limitations:
 
 1. The syntax is not backwards supportable or easily polyfillable. Specifically, the code would
    need to be transpiled to remove the decorator in order to run on older versions of Node.js and
-   older browsers while the new keyword and pragma approach could be easily polyfilled.
+   older browsers while the new global and pragma approach could be easily polyfilled.
 
 2. Within Node.js, we often have need to deprecated *within* a function, for instance, in some
    cases only certain combinations of arguments to a function are deprecated. For the decorator
