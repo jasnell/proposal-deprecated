@@ -23,6 +23,8 @@ function notDeprecatedFunction() {
 }
 ```
 
+## Polyfills and Dealing with Ambiguity
+
 To make this easily polyfillable and to avoid breaking existing code, `deprecated`
 here can actually be a global with a very specific value as opposed to a language
 keyword. For instance, a new `Symbol.deprecated` well-known standard symbol can
@@ -38,13 +40,37 @@ but tooling can see some ambiguity here.. for instance:
 
 ```js
 function foo(deprecated) {
-  deprecated;
+  deprecated;  // Only triggers deprecated semantics in the VM if deprecated === Symbol.deprecated
+               // Causes ambiguity in tooling because it cannot determine reliably if deprecated === Symbol.deprecated
 }
 ```
+
+Note: the VM behavior expected here would be an automatic de-opt of the code by default,
+and possibly a throw if a given flag was enabled.
 
 In this case, the best thing the tooling could do is show a warning about the
 ambiguous use and provide a mechanism (such as a lint ignore rule) to opt-out
 of the checking for that particular case.
+
+Another ambiguous case would be what happens if a user assigns `Symbol.deprecated`
+to a different variable. Would it have the same effect? The answer is no. The
+explicit requirement is an expression that is exactly `deprecated;` (with or without
+the `;` but that's a different argument entirely).
+
+```js
+function foo() {
+  const m = deprecated; // does not trigger the 'deprecated' semantics
+  m; // does not trigger the 'deprecated' semantics
+  
+  deprecated; // does trigger the 'deprecated' semantics
+  deprecated  // does trigger the 'deprecated' semantics
+}
+
+function foo() {
+  deprecated = 'something else';
+  deprecated; // does not trigger the 'deprecated' semantics
+}
+```
 
 ## Pragma option: `'deprecated';`
 
