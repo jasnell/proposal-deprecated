@@ -23,6 +23,31 @@ function notDeprecatedFunction() {
 }
 ```
 
+To make this easily polyfillable and to avoid breaking existing code, `deprecated`
+here can actually be a global with a very specific value as opposed to a language
+keyword. For instance, a new `Symbol.deprecated` well-known standard symbol can
+be defined with `global.deprecated = Symbol.deprecated` by default. Then, when
+the VM or tooling encounters `deprecated;` in the code, and `deprecated` is equal
+to `Symbol.deprecated`, it is handled as described.
+
+On older VMs that do not understand the special meaning of `deprecated;` when it has
+been polyfilled, the statement would be a non-op.
+
+VMs should have little difficulty in determining wether or not to de-opt at runtime
+but tooling can see some ambiguity here.. for instance:
+
+```js
+function foo(deprecated) {
+  deprecated;
+}
+```
+
+In this case, the best thing the tooling could do is show a warning about the
+ambiguous use and provide a mechanism (such as a lint ignore rule) to opt-out
+of the checking for that particular case.
+
+## Pragma option: `'deprecated';`
+
 Alternatively, `deprecated;` can be a pragma type instruction:
 
 ```js
