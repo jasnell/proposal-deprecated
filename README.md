@@ -45,3 +45,35 @@ Tooling support:
   opt-out from. (similar in idea to: `node --no-deprecation`)
 * Debuggers, IDEs, linters, and related tooling can provide visible warnings about
   use of `deprecated` code.
+  
+## Alternative: Using Decorators
+
+The [Decorators](https://github.com/tc39/proposal-decorators) proposal offers a potential
+alternative approach to this...
+  
+```js
+@deprecated
+function deprecatedFunction() {}
+```
+
+This approach, however, carries with it a number of important limitations:
+
+1. The syntax is not backwards supportable or easily polyfillable. Specifically, the code would
+   need to be transpiled to remove the decorator in order to run on older versions of Node.js and
+   older browsers while the new keyword and pragma approach could be easily polyfilled.
+
+2. Within Node.js, we often have need to deprecated *within* a function, for instance, in some
+   cases only certain combinations of arguments to a function are deprecated. For the decorator
+   method to work, then, we would need to be able to decorate individual blocks, e.g.,
+   
+```js
+function foo(...args) {
+  if (typeof args[0] === 'string') {
+    // this is ok
+  } else
+  @deprecated {
+    // this is deprecated  
+  }
+}
+```
+
