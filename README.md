@@ -128,3 +128,29 @@ function foo(...args) {
 }
 ```
 
+## Alternative: `deprecated()` Intrinsic
+
+In Node.js, we do not only mark code as being deprecated, we also associate a static identifier and message with the deprecation to provide helpful additional information to the user. While this has proven to have mixed results, we could follow the same basic pattern here while preserving the semantics discussed above.
+
+```js
+function deprecatedFunction() {
+  deprecated('Use something else');
+  // so some stuff
+}
+```
+
+The default VM behavior would be the same: automatic de-opt when encountered with an option of throwing
+if a given flag is used. The message given to the function would provide the error message text.
+
+This approach is not mutually exclusive with the proposed approach in that rather than defining
+`global.deprecated === Symbol.deprecated()`, we just make `global.deprecated === [Intrinsic function deprecated()]`,
+with the same fundamental semantics.
+
+Where this could run in to issues, however, is in the ambiguous case described earlier where `deprecated` is
+assigned some other value by user code:
+
+```js
+function foo(deprecated) {
+  deprecated('Use something else') // fails if deprecated happens to not be a function
+}
+```
