@@ -6,9 +6,9 @@
 
 # Proposal
 
-The proposal is to introduce a new `deprecated;` global to the language such that
-deprecated code can be easily identified in a standard way by tooling and the VM
-implementations.
+The proposal is to introduce either a new `deprecated;` global to the language
+or a new `'deprecated';` pragma directive such that deprecated code can be easily
+identified in a standard way by tooling and the VM implementations.
 
 For example:
 
@@ -18,7 +18,10 @@ function deprecatedFunction() {
   // do stuff
 }
 
-function notDeprecatedFunction() {
+// or 
+
+function deprecatedFunction() {
+  'deprecated';
   // do stuff
 }
 ```
@@ -31,7 +34,7 @@ Tooling support:
   embedders like Node.js the ability to custom handle it. (similar in idea to
   Node.js' `process.on('warning', (warning) => { /* ... */ })` API)
 * VM implementations can automatically de-optimize code in any `deprecated` scope with
-  an option to ignore the `deprecated` statement if necessary. The point is, there would
+  an option to ignore the `deprecated` statement if necessary. The point is, there should
   be a penalty-by-default to use `deprecated` code that users would need to explicitly
   opt-out from. (similar in idea to: `node --no-deprecation`)
 * Debuggers, IDEs, linters, and related tooling can provide visible warnings about
@@ -109,6 +112,8 @@ function foo() {
   deprecated; // does not trigger the 'deprecated' semantics
 }
 ```
+
+Note: Using the pragma directive option avoids these issues entirely.
 
 We *could* go with an approach like `import { deprecated } from 'something'` to pull in the intrinsic rather
 than making it global. 
