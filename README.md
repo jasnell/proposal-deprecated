@@ -23,6 +23,44 @@ function notDeprecatedFunction() {
 }
 ```
 
+Tooling support:
+
+* VM implementations supporting the `deprecated` mechanism can provide an option to
+  throw when `deprecated` code is encountered (similar in idea to `node --throw-deprecation`)
+  or provide an embedder API to receive a callback when `deprecated` code is compiled, allowing
+  embedders like Node.js the ability to custom handle it. (similar in idea to
+  Node.js' `process.on('warning', (warning) => { /* ... */ })` API)
+* VM implementations can automatically de-optimize code in any `deprecated` scope with
+  an option to ignore the `deprecated` statement if necessary. The point is, there would
+  be a penalty-by-default to use `deprecated` code that users would need to explicitly
+  opt-out from. (similar in idea to: `node --no-deprecation`)
+* Debuggers, IDEs, linters, and related tooling can provide visible warnings about
+  use of `deprecated` code.
+
+## Pragma option: `'deprecated';`
+
+Alternatively, `deprecated;` can be a pragma type instruction:
+
+```js
+function deprecatedFunction() {
+  'deprecated';
+  // do stuff
+}
+```
+
+To support the case where a "deprecation message" should accompany the code, we can
+use something like:
+
+```js
+function deprecatedFunction() {
+  'deprecated; This is deprecated, use something else';
+  // do stuff
+}
+```
+
+The pragma directive option has the fewest number of edge cases, is the easiest to
+polyfill, and avoids potential conflicts that could break user code.
+
 ## Polyfills and Dealing with Ambiguity
 
 To make this easily polyfillable and to avoid breaking existing code, `deprecated`
@@ -110,31 +148,6 @@ been monkeypatched in order to give any kind of reasonable warning. This is why
 relying strictly on tools like linting is not sufficient. There's no silver bullet
 around resolving this particular ambiguity.
 
-## Pragma option: `'deprecated';`
-
-Alternatively, `deprecated;` can be a pragma type instruction:
-
-```js
-function deprecatedFunction() {
-  'deprecated';
-  // do stuff
-}
-```
-
-Tooling support:
-
-* VM implementations supporting the `deprecated` mechanism can provide an option to
-  throw when `deprecated` code is encountered (similar in idea to `node --throw-deprecation`)
-  or provide an embedder API to receive a callback when `deprecated` code is compiled, allowing
-  embedders like Node.js the ability to custom handle it. (similar in idea to
-  Node.js' `process.on('warning', (warning) => { /* ... */ })` API)
-* VM implementations can automatically de-optimize code in any `deprecated` scope with
-  an option to ignore the `deprecated` statement if necessary. The point is, there would
-  be a penalty-by-default to use `deprecated` code that users would need to explicitly
-  opt-out from. (similar in idea to: `node --no-deprecation`)
-* Debuggers, IDEs, linters, and related tooling can provide visible warnings about
-  use of `deprecated` code.
-  
 ## Alternative: Using Decorators
 
 The [Decorators](https://github.com/tc39/proposal-decorators) proposal offers a potential
