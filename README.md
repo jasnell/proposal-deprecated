@@ -80,7 +80,7 @@ to `Symbol.deprecated`, it is handled as described.
 On older VMs that do not understand the special meaning of `deprecated;` when it has
 been polyfilled, the statement would be a non-op.
 
-VMs should have little difficulty in determining wether or not to de-opt at runtime
+VMs should have little difficulty in determining whether or not to de-opt at runtime
 but tooling can see some ambiguity here.. for instance:
 
 ```js
